@@ -25,6 +25,7 @@ from accounts import views as account_views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$',account_views.home,name='home'),
+    url(r'^test/',account_views.test,name='test'),
 ]
 
 if settings.DEBUG:
