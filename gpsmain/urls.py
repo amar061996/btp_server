@@ -20,8 +20,11 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 
+
+from accounts import views as account_views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^$',account_views.home,name='home'),
 ]
 
 if settings.DEBUG:
