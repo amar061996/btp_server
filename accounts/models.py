@@ -26,3 +26,8 @@ class Drivers(models.Model):
 	def __str__(self):
 
 		return self.dname+" : "+str(self.daadhar)
+
+
+
+
+

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     #myApps
     'accounts',
     'location',
+    'transport',
 ]
 
 MIDDLEWARE_CLASSES = [
