@@ -25,12 +25,15 @@ from location.api import urls as location_api_urls
 from accounts.api import urls as accounts_api_urls
 
 from accounts import views as account_views
+
+from transport.api import urls as transport_api_urls
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$',account_views.home,name='home'),
     url(r'^account/',include("accounts.urls",namespace='accounts')),
     url(r'^api/location/',include(location_api_urls,namespace='location-api')),
     url(r'^api/accounts/',include(accounts_api_urls,namespace='accounts-api')),
+    url(r'^api/transport/',include(transport_api_urls,namespace='transport-api')),
 ]
 
 if settings.DEBUG:

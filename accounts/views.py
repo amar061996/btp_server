@@ -25,6 +25,7 @@ def test(request):
 		address=request.POST["address"]
 		contact=request.POST["contact"]
 		aadhar=request.POST["aadhar"]
+		photo=request.POST["photo"]
 
 		#creating objects
 		user=User.objects.create_user(username=username,password=password,first_name=first_name,last_name=last_name,email=email)
@@ -33,7 +34,7 @@ def test(request):
 		else :
 			return HttpResponse("Error Creating User")
 
-		profile=UserProfile.objects.create(user=user,address=address,contact=contact,aadhar=aadhar)
+		profile=UserProfile.objects.create(user=user,address=address,contact=contact,aadhar=aadhar,photo=photo)
 		if profile:
 			return HttpResponse("Created User")		
 
