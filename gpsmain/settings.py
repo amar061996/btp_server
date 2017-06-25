@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'accounts',
     'location',
     'transport',
+    #third-partyApps
+    'rest_framework',
 ]
 
 MIDDLEWARE_CLASSES = [
