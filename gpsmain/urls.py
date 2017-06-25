@@ -20,14 +20,17 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 
-from location.api import urls as api_urls
+from location.api import urls as location_api_urls
+
+from accounts.api import urls as accounts_api_urls
 
 from accounts import views as account_views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$',account_views.home,name='home'),
     url(r'^account/',include("accounts.urls",namespace='accounts')),
-    url(r'^api/',include(api_urls,namespace='location-api'))
+    url(r'^api/location/',include(location_api_urls,namespace='location-api')),
+    url(r'^api/accounts/',include(accounts_api_urls,namespace='accounts-api')),
 ]
 
 if settings.DEBUG:

@@ -23,7 +23,7 @@ class Drivers(models.Model):
 	dname=models.CharField(max_length=250)
 	dcontact=models.CharField(max_length=250)
 	daddress=models.TextField()
-	dlicense=models.CharField(max_length=250)
+	dlicense=models.CharField(max_length=250,primary_key=True)
 	daadhar=models.DecimalField(max_digits=12,decimal_places=0)
 	dphoto=models.ImageField(upload_to=upload_photo)
 	dscan=models.FileField(upload_to=upload_file)
