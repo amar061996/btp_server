@@ -7,8 +7,17 @@ from rest_framework.generics import (
 	UpdateAPIView,
 
 	)
-from .serializers import LocationSerializer,UserLocationSerializer,UserLocationDetailSerializer
+from .serializers import (
+	LocationSerializer,
+	UserLocationSerializer,
+	UserLocationDetailSerializer,
+	TransportLocationSerializer,
+	TransportLocationDetailSerializer
+	)
+
+
 from location.models import Location,UserLocation,TransportLocation
+from transport.models import Transport
 from django.contrib.auth.models import User
 
 from rest_framework import permissions
@@ -33,3 +42,13 @@ class UserLocationDetailView(RetrieveAPIView):
 	serializer_class=UserLocationDetailSerializer
 	lookup_field='username'
 	lookup_url_kwarg='username'	
+
+
+class TransportLocationListView(ListAPIView):
+	queryset=TransportLocation.objects.all()
+	serializer_class=TransportLocationSerializer
+
+
+class TransportLocationDetailView(RetrieveAPIView):
+	queryset=Transport.objects.all()
+	serializer_class=TransportLocationDetailSerializer
