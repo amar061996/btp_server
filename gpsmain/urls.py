@@ -27,6 +27,8 @@ from accounts.api import urls as accounts_api_urls
 from accounts import views as account_views
 
 from transport.api import urls as transport_api_urls
+
+from rest_framework_jwt.views import obtain_jwt_token,refresh_jwt_token,verify_jwt_token
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$',account_views.home,name='home'),
@@ -34,6 +36,9 @@ urlpatterns = [
     url(r'^api/location/',include(location_api_urls,namespace='location-api')),
     url(r'^api/accounts/',include(accounts_api_urls,namespace='accounts-api')),
     url(r'^api/transport/',include(transport_api_urls,namespace='transport-api')),
+    url(r'^api-token-auth/', obtain_jwt_token),
+    url(r'^api-token-refresh/', refresh_jwt_token),
+    url(r'^api-token-verify/', verify_jwt_token),
 ]
 
 if settings.DEBUG:
