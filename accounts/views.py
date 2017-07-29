@@ -10,7 +10,7 @@ from .models import UserProfile
 from django.views.decorators.csrf import csrf_exempt
 def home(request):
 
-	return HttpResponse("Hii")
+	return HttpResponse("Hii there")
 
 @csrf_exempt
 def test(request):
