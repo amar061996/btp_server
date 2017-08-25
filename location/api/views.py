@@ -9,6 +9,7 @@ from rest_framework.generics import (
 	)
 from .serializers import (
 	LocationSerializer,
+	LocationCreateSerializer,
 	UserLocationSerializer,
 	UserLocationDetailSerializer,
 	TransportLocationSerializer,
@@ -29,7 +30,7 @@ class LocationListView(ListAPIView):
 
 class LocationCreateView(CreateAPIView):
 	queryset=Location.objects.all()
-	serializer_class=LocationSerializer
+	serializer_class=LocationCreateSerializer
 
 
 class UserLocationListView(ListAPIView):

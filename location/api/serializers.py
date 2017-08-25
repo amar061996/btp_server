@@ -2,7 +2,9 @@ from rest_framework.serializers import (
 	ModelSerializer,
 	SerializerMethodField,
 	SlugRelatedField,
-	DateTimeField
+	DateTimeField,
+	CharField,
+	IntegerField,
 	)
 
 from location.models import Location,UserLocation,TransportLocation
@@ -11,6 +13,45 @@ from django.contrib.auth.models import User
 from transport.models import Transport
 
 from transport.api.serializers import TransportListSerializer
+
+class LocationCreateSerializer(ModelSerializer):
+	
+	loc_type=CharField(max_length=250)
+	type_id=IntegerField(min_value=0)
+	class Meta:
+		model=Location
+		fields=[
+			'id',
+			'latitude',
+			'longitude',
+			'speed',
+			'loc_type',
+			'type_id'
+			
+
+
+		]
+
+	def create(self,validated_data):
+		
+		type_id=validated_data.get('type_id')
+		longitude=validated_data.get("longitude")
+		latitude=validated_data.get("latitude")
+		speed=validated_data.get("speed")
+		loc_type=validated_data.get('loc_type')
+		print(longitude)
+		location=Location.objects.create(latitude=latitude,longitude=longitude,speed=speed)
+
+		if loc_type=='user':
+			print("hello")
+			user=User.objects.filter(id=type_id).first()
+			created_user=UserLocation.objects.create(user=user,location=location)
+		else:
+			transport=Transport.objects.filter(gps_id=type_id).first()
+			TransportLocation.objects.create(transport=transport,location=location)
+		return {"id":location.id,"latitude":location.latitude,"longitude":location.longitude,"speed":location.speed,"loc_type":loc_type,'type_id':type_id}
+
+
 class LocationSerializer(ModelSerializer):
 	
 	timestamp=DateTimeField(format="%d-%m-%Y %H:%M:%S")
@@ -25,6 +66,17 @@ class LocationSerializer(ModelSerializer):
 
 
 		]
+
+	# def create(self,validated_data):
+	# 	longitude=validated_data.get("longitude")
+	# 	latitude=validated_data.get("latitude")
+	# 	speed=validated_data.get("speed")
+	# 	location=Location.objects.create(latitude=latitude,longitude=longitude,speed=speed)
+	# 	return location
+
+
+
+
 class UserLocationSerializer(ModelSerializer):
 
 	user=UserListSerializer()
@@ -37,6 +89,8 @@ class UserLocationSerializer(ModelSerializer):
 			'location'
 
 		]
+
+
 
 class UserLocationDetailSerializer(ModelSerializer):
 	
