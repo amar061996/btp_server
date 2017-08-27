@@ -104,7 +104,6 @@ class UserDetailSerializer(ModelSerializer):
 	username = serializers.CharField(source='user.username')
 	email=serializers.EmailField(source='user.email')
 	name=serializers.CharField(source='user.get_full_name')
-	photo=SerializerMethodField()
 	user_id=serializers.CharField(source='user.id')
 	class Meta:
 		model=UserProfile
@@ -122,11 +121,4 @@ class UserDetailSerializer(ModelSerializer):
 
 		
 
-	def get_photo(self,obj):
-		
-		try:
-			photo=obj.photo.url
-		except:
-			photo=None
-
-		return photo			
+				
