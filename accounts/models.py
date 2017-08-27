@@ -40,7 +40,7 @@ class Drivers(models.Model):
 class UserProfile(models.Model):
 
 	user=models.OneToOneField(User,on_delete=models.CASCADE)
-	photo=models.ImageField(upload_to=upload_user,blank=True)
+	
 	address=models.TextField()
 	contact=models.CharField(max_length=250)
 	aadhar=models.DecimalField(max_digits=12,decimal_places=0)

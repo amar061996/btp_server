@@ -3,6 +3,7 @@ db.sqlite3
 .DS_Store
 bin/
 include/
+migrations/
 pip-selfcheck.json
 
 # Byte-compiled / optimized / DLL files
