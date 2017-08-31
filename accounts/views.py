@@ -1,7 +1,8 @@
 from django.shortcuts import render
 
-
+import json
 from django.http import HttpResponse
+from django.http import JsonResponse
 
 #models
 from django.contrib.auth.models import User
@@ -10,23 +11,29 @@ from .models import UserProfile
 from django.views.decorators.csrf import csrf_exempt
 def home(request):
 
-	return HttpResponse("Hii there")
+	return HttpResponse("Hii")
 
 @csrf_exempt
 def test(request):
-
+	
+	 
+	# print request.method
+	# print request.POST
+	# print request.body
 	if request.method=='POST':
 		#POST DATA
-		username=request.POST["username"]
-		password=request.POST["password"]
-		first_name=request.POST["first_name"]
-		last_name=request.POST["last_name"]
-		email=request.POST["email"]
-		address=request.POST["address"]
-		contact=request.POST["contact"]
-		aadhar=request.POST["aadhar"]
-		photo=request.POST["photo"]
 
+		data=json.loads(request.body)
+		username=data["username"]
+		password=data["password"]
+		first_name=data["first_name"]
+		last_name=data["last_name"]
+		email=data["email"]
+		address=data["address"]
+		contact=data["contact"]
+		aadhar=data["aadhar"]
+		photo=data["photo"]
+		print(username,password,first_name,last_name,email,address,contact,aadhar,photo)
 		#creating objects
 		user=User.objects.create_user(username=username,password=password,first_name=first_name,last_name=last_name,email=email)
 		if user:
@@ -36,7 +43,7 @@ def test(request):
 
 		profile=UserProfile.objects.create(user=user,address=address,contact=contact,aadhar=aadhar,photo=photo)
 		if profile:
-			return HttpResponse("Created User")		
+			return JsonResponse(data)		
 
 	print("This is GET")
-	return HttpResponse("This is get")		
+	return HttpResponse("This is get bro")		
