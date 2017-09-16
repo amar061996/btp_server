@@ -6,7 +6,8 @@ from .views import (
 	UserLocationListView,
 	UserLocationDetailView,
 	TransportLocationListView,
-	TransportLocationDetailView
+	TransportLocationDetailView,
+	TransportNearbyView,
 	)
 
 
@@ -18,6 +19,7 @@ urlpatterns=[
 	url(r'^user/(?P<username>[\w-]+)/$',UserLocationDetailView.as_view(),name='user-location-detail'),
 	url(r'^transport/$',TransportLocationListView.as_view(),name='transport'),
 	url(r'^transport/(?P<pk>\d+)/$',TransportLocationDetailView.as_view(),name='transport-location-detail'),
+	url(r'^nearby/(?P<username>[\w-]+)/$',TransportNearbyView.as_view(),name='transport-nearby'),
 	
 
 ]

@@ -13,7 +13,8 @@ from .serializers import (
 	UserLocationSerializer,
 	UserLocationDetailSerializer,
 	TransportLocationSerializer,
-	TransportLocationDetailSerializer
+	TransportLocationDetailSerializer,
+	TransportNearbySerializer
 	)
 
 
@@ -53,3 +54,9 @@ class TransportLocationListView(ListAPIView):
 class TransportLocationDetailView(RetrieveAPIView):
 	queryset=Transport.objects.all()
 	serializer_class=TransportLocationDetailSerializer
+
+class TransportNearbyView(RetrieveAPIView):
+	queryset=User.objects.all()
+	serializer_class=TransportNearbySerializer
+	lookup_field='username'
+	lookup_url_kwarg='username'	
