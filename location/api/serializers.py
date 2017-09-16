@@ -1,4 +1,6 @@
+
 from rest_framework.serializers import (
+	Serializer,
 	ModelSerializer,
 	SerializerMethodField,
 	SlugRelatedField,
@@ -12,7 +14,7 @@ from accounts.api.serializers import UserListSerializer
 from django.contrib.auth.models import User
 from transport.models import Transport
 
-from transport.api.serializers import TransportListSerializer
+from transport.api.serializers import TransportListSerializer,TransportDetailSerializer
 
 from math import sin,cos,sqrt,atan2,radians
 
@@ -224,6 +226,178 @@ class TransportNearbySerializer(ModelSerializer):
 			tlocations=[]
 
 		return LocationSerializer(tlocations,many=True).data
+
+
+class JourneySerializer(Serializer):
+	start=CharField(max_length=250)
+	end=CharField(max_length=250)
+
+
+
+
+class UserHistorySerializer(ModelSerializer):
+	transport=SerializerMethodField()
+	journey=SerializerMethodField()
+	class Meta:
+		model=User
+		fields=[
+			'username',
+			'transport',
+			'journey',
+
+		]
+
+	def get_transport(self,obj):
+
+		user=obj
+		user_locations=Location.objects.filter(loc_type='user',type_id=user.id)
+		
+		time_from=datetime.now()+timedelta(days=-1)
+		time_to=datetime.now()
+
+		user_locations_today=user_locations.filter(timestamp__gte=time_from,timestamp__lt=time_to)
+
+		transport_locations=Location.objects.filter(loc_type='transport')
+		transport_locations_today=transport_locations.filter(timestamp__gte=time_from,timestamp__lt=time_to)
+
+		flag=0
+		count=0
+		transport_frequecy_dict=dict()
+		transport_in_journeys=[]
+		index=0
+		journey_count=[0]
+		for i in range(len(user_locations_today)):
+			loc=user_locations_today[i]
+
+			if(loc.latitude=='-1'):
+				index+=1
+				flag=1
+
+				continue
+			if(loc.latitude=='+1'):
+				flag=0
+				count=0
+				new_loc=user_locations_today[i-1]
+				min_t=new_loc.timestamp+timedelta(minutes=-1)
+				max_t=new_loc.timestamp+timedelta(minutes=+1,seconds=+30)
+				lat1=float(new_loc.latitude)
+				lon1=float(new_loc.longitude)
+				qs=transport_locations_today.filter(timestamp__gte=min_t,timestamp__lt=max_t)
+				if len(qs)>0:
+					temp=transport_frequecy_dict.keys()
+					for obj in qs:
+						if obj.type_id in temp:
+							lat2=float(obj.latitude)
+							lon2=float(obj.longitude)
+							#print calc_distance(lat1,lon1,lat2,lon2)
+							if calc_distance(lat1,lon1,lat2,lon2)<10:
+								transport_in_journeys.append(Transport.objects.get(gps_id=int(obj.type_id)))
+				
+				if (len(transport_in_journeys)<1):
+					if len(transport_frequecy_dict)>0:
+						transport_frequecy_dict=sorted(transport_frequecy_dict.items(),key=lambda x:x[1])
+						gps_id=int(transport_frequecy_dict[len(transport_frequecy_dict)-1])
+						tobject=Transport.objects.filter(gps_id=gps_id)
+						transport_in_journeys.append(tobject)
+
+
+				journey_count.append(len(transport_in_journeys)-journey_count[index-1])
+
+				transport_frequecy_dict=dict()
+
+			if((flag==1)and(count<3)):
+				min_t=loc.timestamp+timedelta(minutes=-1)
+				max_t=loc.timestamp+timedelta(minutes=+1,seconds=+30)
+				lat1=float(loc.latitude)
+				lon1=float(loc.longitude)
+				qs=transport_locations_today.filter(timestamp__gte=min_t,timestamp__lt=max_t)
+				if len(qs)>0:
+					for obj in qs:
+						#print obj.type_id
+						if obj.type_id in transport_frequecy_dict:
+							lat2=float(obj.latitude)
+							lon2=float(obj.longitude)
+							#print calc_distance(lat1,lon1,lat2,lon2)
+							if calc_distance(lat1,lon1,lat2,lon2)<10:
+								transport_frequecy_dict[obj.type_id]+=1
+						else:
+							lat2=float(obj.latitude)
+							lon2=float(obj.longitude)
+							#print calc_distance(lat1,lon1,lat2,lon2)
+							if calc_distance(lat1,lon1,lat2,lon2)<10:
+								transport_frequecy_dict[obj.type_id]=1
+
+				count+=1
+
+
+		parsed_index=0        
+		final_data=[]
+		if len(transport_in_journeys)>0:
+			id_qs=list()
+			for obj in transport_in_journeys:
+				id_qs.append(obj.gps_id)
+			#print id_qs
+			for j in range(1,len(journey_count)):
+				current_journey_transport_count=journey_count[j]
+				req=id_qs[parsed_index:parsed_index+current_journey_transport_count]
+				parsed_index+=current_journey_transport_count
+				qs=Transport.objects.filter(gps_id__in=req)
+				final_data.append(TransportDetailSerializer(qs,many=True).data)
+				
+			return final_data
+
+			
+		else:
+			
+			return TransportDetailSerializer([],many=True).data
+
+
+
+	def get_journey(self,obj):
+
+		user=obj
+
+		user_locations=Location.objects.filter(loc_type='user',type_id=user.id)
+		
+		time_from=datetime.now()+timedelta(days=-1)
+		time_to=datetime.now()
+		transport_journey_dict=dict()
+		transport_journey_dict={'start':-1,'end':-1}
+		transport_in_journeys=[]
+		flag=0
+		user_locations_today=user_locations.filter(timestamp__gte=time_from,timestamp__lt=time_to)
+		
+		for i in range(len(user_locations_today)):
+
+			loc=user_locations_today[i]
+			
+			if(loc.latitude=='-1'):
+
+				transport_journey_dict['start']=(
+													user_locations_today[i+1].latitude+":"+user_locations_today[i+1].longitude+"-"+
+													str(user_locations_today[i+1].timestamp.time().hour)+","+
+													str(user_locations_today[i+1].timestamp.time().minute)+"-"+
+													str(user_locations_today[i+1].timestamp.date().year)+","+
+													str(user_locations_today[i+1].timestamp.date().month)+","+
+													str(user_locations_today[i+1].timestamp.date().day)
+												)
+
+			if(loc.latitude=='+1'):
+				
+				transport_journey_dict['end']=(
+													user_locations_today[i-1].latitude+":"+user_locations_today[i-1].longitude+"-"+
+													str(user_locations_today[i-1].timestamp.time().hour)+","+
+													str(user_locations_today[i-1].timestamp.time().minute)+"-"+
+													str(user_locations_today[i-1].timestamp.date().year)+","+
+													str(user_locations_today[i-1].timestamp.date().month)+","+
+													str(user_locations_today[i-1].timestamp.date().day)
+												)
+				
+				transport_in_journeys.append(transport_journey_dict)
+				transport_journey_dict=dict()
+
+
+		return JourneySerializer(transport_in_journeys,many=True).data
 
 
 

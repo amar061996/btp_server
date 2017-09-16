@@ -14,7 +14,8 @@ from .serializers import (
 	UserLocationDetailSerializer,
 	TransportLocationSerializer,
 	TransportLocationDetailSerializer,
-	TransportNearbySerializer
+	TransportNearbySerializer,
+	UserHistorySerializer
 	)
 
 
@@ -60,3 +61,9 @@ class TransportNearbyView(RetrieveAPIView):
 	serializer_class=TransportNearbySerializer
 	lookup_field='username'
 	lookup_url_kwarg='username'	
+
+class UserHistoryView(RetrieveAPIView):
+	queryset=User.objects.all()
+	serializer_class=UserHistorySerializer
+	lookup_field='username'
+	lookup_url_kwarg='username'		
