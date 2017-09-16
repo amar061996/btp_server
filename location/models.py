@@ -11,6 +11,8 @@ class Location(models.Model):
 	latitude=models.CharField(max_length=250)
 	speed=models.CharField(max_length=250)
 	timestamp=models.DateTimeField(auto_now_add=True)
+	loc_type=models.CharField(max_length=250,default='user')
+	type_id=models.CharField(max_length=250,blank=True)
 
 
 	def __str__(self):

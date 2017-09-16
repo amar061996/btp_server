@@ -39,11 +39,9 @@ class LocationCreateSerializer(ModelSerializer):
 		latitude=validated_data.get("latitude")
 		speed=validated_data.get("speed")
 		loc_type=validated_data.get('loc_type')
-		print(longitude)
-		location=Location.objects.create(latitude=latitude,longitude=longitude,speed=speed)
+		location=Location.objects.create(latitude=latitude,longitude=longitude,speed=speed,loc_type=loc_type,type_id=str(type_id))
 
 		if loc_type=='user':
-			print("hello")
 			user=User.objects.filter(id=type_id).first()
 			created_user=UserLocation.objects.create(user=user,location=location)
 		else:
