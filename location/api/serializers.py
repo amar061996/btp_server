@@ -60,6 +60,8 @@ class LocationSerializer(ModelSerializer):
 			'latitude',
 			'longitude',
 			'speed',
+			'loc_type',
+			'type_id',
 			'timestamp',
 
 
