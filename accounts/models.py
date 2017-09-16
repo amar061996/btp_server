@@ -25,7 +25,7 @@ class Drivers(models.Model):
 	daddress=models.TextField()
 	dlicense=models.CharField(max_length=250,primary_key=True)
 	daadhar=models.DecimalField(max_digits=12,decimal_places=0)
-	dphoto=models.ImageField(upload_to=upload_photo)
+	dphoto=models.TextField(blank=True)
 	dscan=models.FileField(upload_to=upload_file)
 
 

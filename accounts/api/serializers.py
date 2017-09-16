@@ -38,7 +38,7 @@ class DriverListSerializer(ModelSerializer):
 class DriverDetailSerializer(ModelSerializer):
 
  	dphoto=SerializerMethodField()
- 	dscan=SerializerMethodField()
+ 	#dscan=SerializerMethodField()
  	class Meta:
  		model=Drivers
  		fields=[
@@ -49,7 +49,7 @@ class DriverDetailSerializer(ModelSerializer):
 				'dlicense',
 				'daadhar',
 				'dphoto',
-				'dscan'
+				#'dscan'
 
 
 		]
@@ -57,7 +57,7 @@ class DriverDetailSerializer(ModelSerializer):
 	def get_dphoto(self,obj):
 			try:
 
-				dphoto=obj.dphoto.url
+				dphoto=obj.dphoto
 
 			except:
 
@@ -65,15 +65,18 @@ class DriverDetailSerializer(ModelSerializer):
 
 			return dphoto	
 
+	#to get scan doc
+	'''
 	def get_dscan(self,obj):
 
 		try:
-			dscan=obj.dscan.url
+
+			dscan=obj.dscan.name
 		except:
 			dscan=None
 
 		return dscan				
-
+	'''
 
 ############################################################### USERS SERIALIZERS #################################################################
 
