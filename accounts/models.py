@@ -47,3 +47,13 @@ class UserProfile(models.Model):
 
 	def __str__(self):
 		return self.user.username
+
+class UserContact(models.Model):
+
+	user=models.OneToOneField(User,on_delete=models.CASCADE)
+	emergency_contact=models.CharField(max_length=250)
+
+
+
+	def __str__(self):
+		return self.user.username+":"+self.emergency_contact

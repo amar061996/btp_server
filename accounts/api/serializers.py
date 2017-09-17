@@ -11,7 +11,7 @@ from rest_framework.serializers import (
 
 
 
-from accounts.models import Drivers,UserProfile
+from accounts.models import Drivers,UserProfile,UserContact
 
 from django.contrib.auth.models import User
 ################################################### DRIVERS SERIALIZERS ###############################################################################
@@ -124,4 +124,40 @@ class UserDetailSerializer(ModelSerializer):
 
 		
 
-				
+class UserContactSerializer(ModelSerializer):
+	username=serializers.CharField(max_length=250)
+	class Meta:
+		model=UserContact
+		fields=[
+			'username',
+			'emergency_contact'
+
+
+
+		]
+
+	def create(self,validated_data):
+		
+
+		username=validated_data.get('username')
+		user=User.objects.get(username=username)
+		
+		obj=UserContact.objects.create(user=user,emergency_contact=validated_data.get('emergency_contact'))
+
+		return {'username':username,'emergency_contact':validated_data.get('emergency_contact')}
+
+
+		#print validated_data
+
+
+class UserContactGetSerializer(ModelSerializer):
+
+	class Meta:
+		model=UserContact
+		fields=[
+			
+			'emergency_contact'
+
+
+
+		]			

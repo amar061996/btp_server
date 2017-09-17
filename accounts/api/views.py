@@ -13,10 +13,12 @@ from .serializers import (
 	DriverListSerializer,
 	DriverDetailSerializer,
 	UserListSerializer,
-	UserDetailSerializer
+	UserDetailSerializer,
+	UserContactSerializer,
+	UserContactGetSerializer
 	)
 
-from accounts.models import Drivers,UserProfile
+from accounts.models import Drivers,UserProfile,UserContact
 from django.contrib.auth.models import User
 
 ################################################### DRIVERS VIEWS ###############################################################################
@@ -42,3 +44,16 @@ class UserDetailSerializer(RetrieveAPIView):
 	serializer_class=UserDetailSerializer
 	lookup_field='user__username'
 	lookup_url_kwarg='username'
+
+class UserContactView(RetrieveUpdateAPIView):
+
+	queryset=UserContact.objects.all()
+	serializer_class=UserContactGetSerializer
+	lookup_field='user__username'
+	lookup_url_kwarg='username'
+
+class UserContactCreateView(CreateAPIView):
+
+	queryset=UserContact.objects.all()
+	serializer_class=UserContactSerializer
+	
